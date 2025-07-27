@@ -1,0 +1,17 @@
+.admin-container {
+  background-color: #f7f9fc;
+  border-radius: 12px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1fc;
+}
+
+select.form-select-sm {
+  background-color: #fefefe;
+  border-color: #ced4da;
+}
+
+.modal-content {
+  border-radius: 12px;
+}

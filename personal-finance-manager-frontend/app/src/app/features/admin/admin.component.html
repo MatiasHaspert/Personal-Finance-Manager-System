@@ -1,0 +1,122 @@
+<div class="admin-container container-xl py-5 px-3 fade-in">
+  <div class="mx-auto" style="max-width: 900px;">
+    <h3 class="mb-4">Gestión de Usuarios</h3>
+    @if(mensajeAsignacion) {
+      <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+        {{ mensajeAsignacion }}
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="cerrarMensaje()"></button>
+      </div>
+    }
+
+    <div class="table-responsive shadow-sm rounded bg-white p-3">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuarios; track usuario.id) {
+            <tr>
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.nombre }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <div class="d-flex flex-column gap-1">
+
+                <div class="d-flex flex-wrap gap-1">
+                  @for (rol of usuario.roles; track $index) {
+                    <span class="badge d-flex align-items-center gap-1 pe-1"
+                          [ngClass]="{
+                            'bg-danger-subtle text-danger': rol === 'ROLE_ADMIN',
+                            'bg-primary-subtle text-primary': rol === 'ROLE_USER'
+                          }">
+                      {{ rol === 'ROLE_ADMIN' ? 'Administrador' : 'Usuario' }}
+                      
+                      @if(usuario.id !== getUsuarioId()) {
+                        <button class="btn-close btn-close-white btn-sm ms-1" aria-label="Quitar rol"
+                                (click)="onEliminarRol(usuario.id, rol)"
+                                style="filter: invert(1); opacity: 0.7; width: 0.65rem; height: 0.65rem;"></button>
+                      }
+                    </span>
+                  }
+              </div>
+
+
+                <!-- Selector para asignar un nuevo rol (solo si no los tiene todos) -->
+                @if(usuario.roles.length < 2){
+                  <div>
+                    @if(usuario.id != getUsuarioId()){
+                      <select class="form-select form-select-sm w-auto mt-1"
+                              (change)="onAsignarRol(usuario.id, $event)"
+                              [disabled]="usuario.id === getUsuarioId()">
+                        <option value="" disabled selected>Asignar rol...</option>
+                        @if(!usuario.roles.includes('ROLE_USER')){
+                          <option value="ROLE_USER">Usuario</option>
+                        }
+                        
+                        @if(!usuario.roles.includes('ROLE_ADMIN')){
+                          <option value="ROLE_ADMIN">Administrador</option>
+                        }  
+                      </select>
+                    }
+                  </div>
+                }
+          </div>
+        </td>
+              <td class="text-end">
+                <button class="btn btn-outline-danger btn-sm" (click)="abrirModalEliminar(usuario)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="text-center text-muted">No hay usuarios registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal eliminar -->
+@if (usuarioSeleccionado) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal d-block fade show">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-subtle">
+          <h5 class="modal-title text-danger">Eliminar Usuario</h5>
+          <button type="button" class="btn-close" (click)="cerrarModalEliminar()" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro que querés eliminar al usuario <strong>{{ usuarioSeleccionado.nombre }}</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalEliminar()">Cancelar</button>
+          <button type="button" class="btn btn-danger" (click)="confirmarEliminar()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Botones según roles -->
+<div class="position-fixed bottom-0 end-0 p-3">
+  @if(tieneAmbosRoles()){
+    <button class="btn btn-outline-primary" (click)="irAinicio()">
+      <i class="bi bi-person"></i> Ir a vista de Usuario
+    </button>
+  }
+
+  <button class="btn btn-outline-secondary" (click)="irAlogin()">
+    <i class="bi bi-box-arrow-left"></i> Volver al login
+  </button>
+  
+</div>

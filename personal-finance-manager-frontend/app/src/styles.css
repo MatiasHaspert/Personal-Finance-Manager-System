@@ -1,0 +1,14 @@
+body {
+  overflow: hidden;
+  background-color: #f8f9fa;
+}
+
+section, aside {
+  scroll-behavior: smooth;
+}
+
+hr {
+  border-top: 1px solid #dee2e6;
+}
+
+

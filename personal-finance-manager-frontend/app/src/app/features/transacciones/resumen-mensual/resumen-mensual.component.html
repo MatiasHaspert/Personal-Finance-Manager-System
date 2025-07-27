@@ -1,0 +1,41 @@
+<div class="card resumen-card shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title mb-3 text-center">Resumen del Mes</h5>
+
+    <!-- Ingresos -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2 text-muted">
+        <i class="bi bi-cash-stack fs-5 text-success"></i>
+        <span>Total Ingresos</span>
+      </div>
+      <span class="fw-semibold text-success">{{ totalIngresos | currency:'ARS':'$':'1.0-0':'es-AR' }}</span>
+    </div>
+
+    <!-- Gastos -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2 text-muted">
+        <i class="bi bi-cash-coin fs-5 text-danger"></i>
+        <span>Total Gastos</span>
+      </div>
+      <span class="fw-semibold text-danger">  {{ totalGastos | currency:'ARS':'$':'1.0-0':'es-AR' }} </span>
+    </div>
+
+    <hr>
+
+    <!-- Saldo -->
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-piggy-bank fs-5" [ngClass]="{ 'text-success': saldo >= 0, 'text-danger': saldo < 0 }"></i>
+        <span class="fw-semibold">Saldo</span>
+      </div>
+      <span class="fw-bold" [ngClass]="{ 'text-success': saldo >= 0, 'text-danger': saldo < 0 }">
+        {{ saldo | currency:'ARS':'$':'1.0-0':'es-AR' }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<app-grafico-por-categoria
+  [dataGastos]="gastosPorCategoria"
+  [dataIngresos]="ingresosPorCategoria">
+</app-grafico-por-categoria>

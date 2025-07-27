@@ -1,0 +1,64 @@
+/* Scroll personalizado para lista de transacciones */
+.scroll-y {
+  overflow-y: auto;
+  max-height: 75vh;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.scroll-y::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-y::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+/* Estilo base para ítem de transacción */
+.transaccion-item {
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-right: 0.5rem;
+}
+
+/* Hover visual */
+.transaccion-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Botones de acción ocultos */
+.botones-hover {
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Mostrar botones al hacer hover */
+.transaccion-item:hover .botones-hover {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Asegurar espacio para monto (evita superposición) */
+.transaccion-item .fw-semibold {
+  min-width: 100px;
+  text-align: end;
+}
+
+/* Mejoras responsivas */
+@media (max-width: 768px) {
+  .transaccion-item .fw-semibold {
+    min-width: auto;
+    text-align: right;
+  }
+
+  .botones-hover {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

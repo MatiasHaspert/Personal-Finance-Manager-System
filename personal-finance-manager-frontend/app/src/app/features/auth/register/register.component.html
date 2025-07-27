@@ -1,0 +1,73 @@
+<div class="container mt-5" style="max-width: 400px;">
+  <h5 class="mb-4 text-center fw-bold">Registrarse</h5>
+
+  <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label text-muted fw-semibold small">Nombre</label>
+      <div class="input-group input-group-sm has-validation">
+        <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+        <input id="nombre"
+               type="text"
+               class="form-control"
+               formControlName="nombre"
+               [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+        <div class="invalid-feedback">
+          El nombre debe tener entre 5 y 20 caracteres.
+        </div>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label text-muted fw-semibold small">Correo electrónico</label>
+      <div class="input-group input-group-sm has-validation">
+        <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+        <input id="email"
+               type="email"
+               class="form-control"
+               formControlName="email"
+               [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+        <div class="invalid-feedback">
+          Ingresá un correo válido.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="mb-3">
+      <label for="password" class="form-label text-muted fw-semibold small">Contraseña</label>
+      <div class="input-group input-group-sm has-validation">
+        <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+        <input id="password"
+               type="password"
+               class="form-control"
+               formControlName="password"
+               [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+        <div class="invalid-feedback">
+          La contraseña debe tener entre 6 y 30 caracteres.
+        </div>
+      </div>
+    </div>
+
+    <!-- Error del servidor -->
+    @if(error){
+      <div class="alert alert-danger small py-2">
+      {{ error }}
+      </div>
+    }
+    
+    <!-- Botón registrar -->
+    <button type="submit" class="btn btn-success w-100 btn-sm">
+      <i class="bi bi-person-plus-fill me-1"></i> Registrarme
+    </button>
+  </form>
+
+  <!-- Ir a login -->
+  <div class="text-center mt-3">
+    <button type="button" class="btn btn-link small text-decoration-none p-0" (click)="iraLogin()">
+      ¿Ya tenés cuenta? <span class="fw-semibold">Iniciá sesión acá</span>
+    </button>
+  </div>
+</div>

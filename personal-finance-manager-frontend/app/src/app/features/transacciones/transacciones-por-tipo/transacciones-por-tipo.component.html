@@ -1,0 +1,52 @@
+<!-- Título -->
+<h6 class="mb-2 text-uppercase text-muted fw-bold">Transacciones por tipo</h6>
+
+<!-- Botones debajo del título -->
+<div class="btn-group btn-group-sm mb-3 w-100" role="group">
+  <button class="btn w-50"
+          [class.btn-primary]="tipoSeleccionado === 'GASTO'"
+          [class.btn-outline-primary]="tipoSeleccionado !== 'GASTO'"
+          (click)="seleccionarTipo('GASTO')">
+    <i class="bi bi-cash-coin me-1"></i> Gasto
+  </button>
+  <button class="btn w-50"
+          [class.btn-primary]="tipoSeleccionado === 'INGRESO'"
+          [class.btn-outline-primary]="tipoSeleccionado !== 'INGRESO'"
+          (click)="seleccionarTipo('INGRESO')">
+    <i class="bi bi-cash-stack me-1"></i> Ingreso
+  </button>
+</div>
+
+<!-- Lista de transacciones -->
+<div class="border rounded shadow-sm p-3 scroll-y" style="max-height: 400px; background-color: #FFF6EF;">
+  <ul class="list-unstyled small mb-0">
+
+    @if (transacciones.length === 0) {
+      <li class="text-muted fst-italic">
+        No hay transacciones registradas para este tipo.
+      </li>
+    }
+
+    @for (t of transacciones; track t.id) {
+      <li class="d-flex justify-content-between align-items-start mb-3">
+        <div class="pe-2">
+          @if(t.descripcion){
+            <div class="fw-semibold">{{ t.descripcion }}</div>
+            <div class="text-muted">{{ t.categoria }}</div>
+          } @else {
+            <div class="fw-semibold">{{ t.categoria }}</div>
+          }
+          <small class="text-muted">{{ t.fecha | date:'EEEE d \'de\' MMMM, y' }}</small>
+        </div>
+
+        <span [ngClass]="{
+          'text-success fw-semibold': tipoSeleccionado === 'INGRESO',
+          'text-danger fw-semibold': tipoSeleccionado === 'GASTO'
+        }">
+          {{ t.monto | currency:'ARS':'$':'1.0-0':'es-AR' }}
+        </span>
+      </li>
+    }
+
+  </ul>
+</div>

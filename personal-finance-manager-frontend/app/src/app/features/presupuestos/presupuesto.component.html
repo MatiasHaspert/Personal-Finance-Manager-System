@@ -1,0 +1,334 @@
+<div class="container-xl py-5 px-3 fade-in">
+  <div class="mx-auto" style="max-width: 900px;">
+    <h3 class="mb-4">Presupuesto Mensual</h3>
+
+    @if (presupuestoMensual; as pm) {
+      <div class="card shadow-sm mb-4 border-start border-primary border-4">
+        <div class="card-body">
+          <h5 class="card-title">Este mes</h5>
+          <div class="mb-2">
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Ejecutado</small>
+              <small class="text-muted">{{ pm.porcentajeEjecutado | number:'1.0-2' }}%</small>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div
+                class="progress-bar"
+                [ngClass]="getBarClass(pm.porcentajeEjecutado)"
+                [style.width.%]="pm.porcentajeEjecutado > 100 ? 100 : pm.porcentajeEjecutado"
+                role="progressbar"
+              ></div>
+            </div>
+          </div>
+          <p class="mb-1"><i class="bi bi-cash-coin"></i> Presupuestado: <strong>${{ pm.montoPresupuestado }}</strong></p>
+          <p class="mb-1"><i class="bi bi-currency-dollar text-danger"></i> Gastos: <strong class="text-danger">${{ pm.montoGastos }}</strong></p>
+          <p class="mb-3"><i class="bi bi-cash"></i> Restante: <strong [class.text-success]="pm.montoRestante >= 0" [class.text-danger]="pm.montoRestante < 0">${{ pm.montoRestante }}</strong></p>          
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm" (click)="abrirModalEditarPresupuesto(pm, 'mensual')">
+              <i class="bi bi-pencil me-1"></i> Editar
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="abrirModalEliminarPresupuesto(pm, 'mensual')">
+              <i class="bi bi-trash me-1"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Presupuestos por Categoría</h3>
+        <button class="btn btn-success" (click)="abrirModalCrearPresupuesto('categoria')">
+          <i class="bi bi-plus-circle me-1"></i> Agregar
+        </button>
+      </div>
+
+      <!-- Contenedor con scroll -->
+      <div class="categorias-container">
+        @for (p of presupuestosCategoria; track p.id) {
+          <div class="categoria-card mb-3">
+            <div class="card h-100 border-start border-4" 
+                 [class.border-danger]="p.montoRestante < 0" 
+                 [class.border-warning]="p.montoRestante >= 0 && p.porcentajeEjecutado > 75" 
+                 [class.border-success]="p.montoRestante >= 0 && p.porcentajeEjecutado <= 75">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0">{{ p.categoria }}</h5>
+                  <span class="badge rounded-pill" 
+                        [class.bg-danger]="p.montoRestante < 0" 
+                        [class.bg-warning]="p.montoRestante >= 0 && p.porcentajeEjecutado > 75" 
+                        [class.bg-success]="p.montoRestante >= 0 && p.porcentajeEjecutado <= 75">
+                    {{ p.porcentajeEjecutado | number:'1.0-2' }}%
+                  </span>
+                </div>
+
+                <div class="mt-3">
+                  <p class="mb-1"><i class="bi bi-cash-coin"></i> Presupuestado: <strong>${{ p.montoPresupuestado }}</strong></p>
+                  <p class="mb-1"><i class="bi bi-currency-dollar text-danger"></i> Gastos: <strong class="text-danger">${{ p.montoGastos }}</strong></p>
+                  <p class="mb-2"><i class="bi bi-cash"></i> Restante: <strong [class.text-success]="p.montoRestante >= 0" [class.text-danger]="p.montoRestante < 0">${{ p.montoRestante }}</strong></p>
+                </div>
+        
+                <div class="progress mt-2" style="height: 8px;">
+                  <div class="progress-bar" 
+                       [class.bg-danger]="p.montoRestante < 0" 
+                       [class.bg-warning]="p.montoRestante >= 0 && p.porcentajeEjecutado > 75" 
+                       [class.bg-success]="p.montoRestante >= 0 && p.porcentajeEjecutado <= 75" 
+                       [style.width.%]="p.porcentajeEjecutado > 100 ? 100 : p.porcentajeEjecutado">
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                  <button class="btn btn-outline-primary btn-sm flex-grow-1" 
+                          (click)="abrirModalEditarPresupuesto(p, 'categoria')">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm flex-grow-1" 
+                          (click)="abrirModalEliminarPresupuesto(p, 'categoria')">
+                    <i class="bi bi-trash me-1"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="alert alert-light border shadow-sm text-center py-4">
+            <i class="bi bi-wallet2 me-2"></i> No hay presupuestos por categoría creados
+            <button class="btn btn-link p-0 ms-2" (click)="abrirModalCrearPresupuesto('categoria')">
+              Crear uno ahora
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="alert alert-light border shadow-sm d-flex justify-content-between align-items-center">
+        <div>No hay presupuesto mensual para este mes.</div>
+        <button class="btn btn-success btn-sm" (click)="abrirModalCrearPresupuesto('mensual')">
+          Crear presupuesto mensual
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- FAB: Botón flotante en esquina inferior izquierda -->
+<button
+  class="btn btn-outline-secondary fab-bottom-left shadow"
+  (click)="volverAlInicio()"
+>
+  <i class="bi bi-arrow-left"></i> Inicio
+</button>
+
+
+<!-- Modal para Crear Presupuesto -->
+@if (modalCrearAbierto) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form [formGroup]="formPresupuesto" (ngSubmit)="crearPresupuesto()">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Nuevo Presupuesto
+              @if (modoPresupuesto === 'categoria') {
+                <span>(por categoría)</span>
+              } @else {
+                <span>(mensual)</span>
+              }
+            </h5>
+            <button type="button" class="btn-close" (click)="cerrarModalCrearPresupuesto()"></button>
+          </div>
+
+          <div class="modal-body">
+            @if (modoPresupuesto === 'categoria') {
+              <div class="mb-3">
+                <label for="categoria" class="form-label">Categoría</label>
+                <select
+                  id="categoria"
+                  class="form-select"
+                  formControlName="categoria"
+                  required
+                >
+                  <option value="" disabled>Seleccionar categoría</option>
+                  @for (cat of categorias; track cat.value) {
+                    <option [value]="cat.value">
+                      {{ categoriaService.getCategoryDisplayName(cat.value) }}
+                    </option>
+                  }
+                </select>
+                @if (formPresupuesto.get('categoria')?.invalid && formPresupuesto.get('categoria')?.touched) {
+                  <div class="text-danger small">Seleccioná una categoría válida.</div>
+                }
+              </div>
+            }
+
+            <div class="mb-3">
+              <label class="form-label">Monto presupuestado</label>
+              <input type="number" class="form-control" formControlName="monto" min="0.01" step="0.01" required />
+              @if (formPresupuesto.get('monto')?.invalid && formPresupuesto.get('monto')?.touched) {
+                <div class="text-danger small">Ingresá un monto válido mayor a cero.</div>
+              }
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalCrearPresupuesto()">Cancelar</button>
+            <button type="submit" class="btn btn-success" [disabled]="formPresupuesto.invalid">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show"></div>
+}
+
+<!--Modal Editar Presupuesto -->
+@if (modalEditarAbierto) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form [formGroup]="formPresupuesto" (ngSubmit)="editarPresupuesto()">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Editar Presupuesto
+              @if (modoPresupuesto === 'categoria') {
+                <span>(por categoría)</span>
+              } @else {
+                <span>(mensual)</span>
+              }
+            </h5>
+            <button type="button" class="btn-close" (click)="cerrarModalEditarPresupuesto()"></button>
+          </div>
+
+          <div class="modal-body">
+            @if (modoPresupuesto === 'categoria') {
+              <div class="mb-3">
+                <label for="categoriaEdit" class="form-label">Categoría</label>
+                <select
+                  id="categoriaEdit"
+                  class="form-select"
+                  formControlName="categoria"
+                  required
+                >
+                  <option value="" disabled>Seleccionar categoría</option>
+                  @for (cat of categorias; track cat.value) {
+                    <option [value]="cat.value">
+                      {{ categoriaService.getCategoryDisplayName(cat.value) }}
+                    </option>
+                  }
+                </select>
+                @if (formPresupuesto.get('categoria')?.invalid && formPresupuesto.get('categoria')?.touched) {
+                  <div class="text-danger small">Seleccioná una categoría válida.</div>
+                }
+              </div>
+            }
+
+            <div class="mb-3">
+              <label class="form-label">Monto presupuestado</label>
+              <input type="number" class="form-control" formControlName="monto" min="0.01" step="0.01" required />
+              @if (formPresupuesto.get('monto')?.invalid && formPresupuesto.get('monto')?.touched) {
+                <div class="text-danger small">Ingresá un monto válido mayor a cero.</div>
+              }
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalEditarPresupuesto()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="formPresupuesto.invalid">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show"></div>
+}
+
+
+<!-- Modal Eliminar Presupuesto -->
+@if (modalEliminarAbierto) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-subtle">
+          <h5 class="modal-title text-danger">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" (click)="cerrarModalEliminar()"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">
+            ¿Estás seguro que querés eliminar este presupuesto
+            @if (modoPresupuesto === 'mensual') {
+              <strong>mensual</strong>
+            }
+            @if (modoPresupuesto === 'categoria') {
+              <strong>de categoría "{{ presupuestoSeleccionado?.categoria }}"</strong>
+            }
+            ?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalEliminar()">Cancelar</button>
+          <button type="button" class="btn btn-danger" (click)="confirmarEliminarPresupuesto()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show"></div>
+}
+
+
+@if(presupuestoMensual){
+  <!-- Alerta de presupuesto mensual -->
+  @if (presupuestoMensual.mensaje) {
+    <div class="alert-modal-overlay">
+      <div class="alert-modal-content">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-info-circle me-2"></i>
+              {{ presupuestoMensual.mensaje }} <strong>(Presupuesto Mensual)</strong>
+            </div>
+            <button type="button" class="btn-close" (click)="cerrarMensajePresupuesto(presupuestoMensual!)" aria-label="Cerrar"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Alertas de presupuestos por categoría -->
+  @for (p of presupuestosCategoria; track p.id) {
+    @if (p.mensaje) {
+      <div class="alert-modal-overlay">
+        <div class="alert-modal-content">
+          <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <i class="bi bi-info-circle me-2"></i>
+                {{ p.mensaje }} <strong>({{ p.categoria }})</strong>
+              </div>
+              <button type="button" class="btn-close" (click)="cerrarMensajePresupuesto(p)" aria-label="Cerrar"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+}
+
+@if(error){
+  <div class="alert-modal-overlay">
+    <div class="alert-modal-content">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ error }}
+            <strong>(Error)</strong>
+          </div>
+          <button type="button" class="btn-close" 
+                  (click)="error = null" aria-label="Cerrar"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

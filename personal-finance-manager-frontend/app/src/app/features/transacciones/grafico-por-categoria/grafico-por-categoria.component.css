@@ -1,0 +1,11 @@
+/* grafico-por-categoria.component.css */
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em;
+}

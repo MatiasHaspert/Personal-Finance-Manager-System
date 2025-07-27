@@ -1,0 +1,64 @@
+<div class="d-flex" style="height: 100vh;">
+  <!-- Panel izquierdo -->
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white shadow-sm"
+     style="width: 250px; height: 100vh; overflow-y: auto; background-color: #4B3DFE;">
+
+    <!-- Título / Logo -->
+    <a routerLink="/" class="d-flex align-items-center mb-4 text-white text-decoration-none">
+      <i class="bi bi-wallet2 fs-4 me-2"></i>
+      <span class="fs-5 fw-semibold">Mis Finanzas</span>
+    </a>
+
+    <!-- Selector de mes -->
+    <div class="mb-3">
+      <app-month-picker></app-month-picker>
+    </div>
+
+    <!-- Navegación -->
+    <div>
+      <ul class="nav nav-pills flex-column gap-1">
+        <li class="nav-item">
+          <button
+            type="button"
+            class="nav-link d-flex align-items-center gap-2 w-100 text-white btn btn-link"
+            [class.active]="router.url === '/informes'"
+            (click)="router.navigate(['/informes'])"
+          >
+            <i class="bi bi-folder2-open"></i> Informes
+          </button>
+        </li>
+
+        @if(esAdmin()){
+          <li class="nav-item">
+            <button
+              type="button"
+              class="nav-link d-flex align-items-center gap-2 w-100 text-white btn btn-link"
+              [class.active]="router.url === '/admin'"
+              (click)="router.navigate(['/admin'])"
+            >
+              <i class="bi bi-shield-lock"></i> Panel de Administrador
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Panel de resumen mensual (principal) -->
+  <section class="p-4" style="background-color: #F8F9FC; flex-grow: 1; border-right: 1px solid #dee2e6; overflow-y: auto;">
+    <app-resumen-mensual></app-resumen-mensual>
+  </section>
+
+  <!-- Panel de transacciones mensuales -->
+  <section class="p-4 bg-white" style="width: 400px; overflow-y: auto;">
+    <app-transacciones-mensuales></app-transacciones-mensuales>
+  </section>
+
+  <!-- Panel derecho -->
+  <aside class="d-flex flex-column flex-shrink-0 p-3 shadow-sm border-start"
+       style="width: 250px; overflow-y: auto; background-color: #FFF6EF;">
+    <app-user></app-user>
+    <hr class="my-3">
+    <app-transacciones-por-tipo></app-transacciones-por-tipo>
+  </aside>
+</div>

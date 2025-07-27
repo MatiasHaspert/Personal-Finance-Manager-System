@@ -1,0 +1,10 @@
+.resumen-card {
+  min-width: 220px;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  border: none;
+}
+
+.resumen-card .card-body {
+  padding: 1.25rem;
+}

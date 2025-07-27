@@ -1,0 +1,58 @@
+<div class="card mt-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="text-muted text-uppercase small fw-bold mb-0">
+        {{ tipoSeleccionado === 'GASTO' ? 'Gastos por categoría' : 'Ingresos por categoría' }}
+      </h6>
+      <div class="btn-group btn-group-sm">
+        <button class="btn"
+                [class.btn-primary]="tipoSeleccionado === 'GASTO'"
+                [class.btn-outline-primary]="tipoSeleccionado !== 'GASTO'"
+                (click)="seleccionarTipo('GASTO')">
+          <i class="bi bi-cash-stack me-1"></i> Gastos
+        </button>
+        <button class="btn"
+                [class.btn-primary]="tipoSeleccionado === 'INGRESO'"
+                [class.btn-outline-primary]="tipoSeleccionado !== 'INGRESO'"
+                (click)="seleccionarTipo('INGRESO')">
+          <i class="bi bi-piggy-bank me-1"></i> Ingresos
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor del gráfico con spinner -->
+    <div class="position-relative" style="min-height: 300px;">
+      
+      
+      <!-- Spinner-->
+      @if(isLoading){
+        <div class="d-flex justify-content-center align-items-center h-100">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <div>No existen transacciones.</div>
+        </div>
+      }
+      
+      <!--Mensaje cuando no hay datos-->
+      @if(!isLoading && !barChartData.datasets[0].data.length) {
+        <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted">
+          <i class="bi bi-pie-chart fs-1 mb-2"></i>
+          <p class="mb-0 text-center">
+            No hay {{ tipoSeleccionado === 'GASTO' ? 'gastos' : 'ingresos' }} registrados<br>
+            <small class="text-muted">Comienza agregando transacciones</small>
+          </p>
+        </div>
+      }
+
+      <!--Gráfico-->
+      @if (!isLoading && barChartData.datasets[0].data.length) {
+        <canvas baseChart
+              [data]="barChartData"
+              [options]="barChartOptions"
+              chartType="bar">
+        </canvas>
+      }
+    </div>
+  </div>
+</div>

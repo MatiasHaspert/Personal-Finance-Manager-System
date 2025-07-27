@@ -1,0 +1,68 @@
+<div class="container mt-5" style="max-width: 400px;">
+  
+  <h2 class="mb-4 text-center fw-bold" style="color: brown;">Mis Finanzas - Haspert</h2>
+  <h5 class="mb-4 text-center fw-bold">Iniciar sesión</h5>
+
+  <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+
+    <!-- Correo electrónico -->
+    <div class="mb-3">
+      <label for="email" class="form-label text-muted fw-semibold small">Correo electrónico</label>
+      <div class="input-group input-group-sm has-validation">
+        <span class="input-group-text bg-light"><i class="bi bi-envelope-at-fill"></i></span>
+        <input id="email"
+               type="email"
+               class="form-control"
+               formControlName="email"
+               [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+        <div class="invalid-feedback">
+          Ingresá un email válido.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="mb-3">
+      <label for="password" class="form-label text-muted fw-semibold small">Contraseña</label>
+      <div class="input-group input-group-sm has-validation">
+        <span class="input-group-text bg-light"><i class="bi bi-lock-fill"></i></span>
+        <input id="password"
+               type="password"
+               class="form-control"
+               formControlName="password"
+               [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+        <div class="invalid-feedback">
+          La contraseña debe tener entre 6 y 30 caracteres.
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje de registro exitoso -->
+    @if (registroExistoso) {
+      <div class="alert alert-success small py-2">
+        ¡Registro exitoso! Ahora podés iniciar sesión.
+      </div>
+    }
+
+    <!-- Mensaje de error -->
+    @if (error) {
+      <div class="alert alert-danger small py-2">
+        {{ error }}
+      </div>
+    }
+
+    <!-- Botón ingresar -->
+    <button type="submit" class="btn btn-primary w-100 btn-sm">
+      <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+    </button>
+  </form>
+
+  <!-- Link a registro -->
+  <div class="text-center mt-3">
+    <button type="button"
+            class="btn btn-link small text-decoration-none p-0"
+            (click)="iraRegister()">
+      ¿No tenés cuenta? <span class="fw-semibold">Registrate acá</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="mb-3">
+  <label for="monthPicker" class="form-label text-uppercase text-white small fw-bold ">
+    Calendario
+  </label>
+  <div class="input-group input-group-sm">
+    <span class="input-group-text bg-light text-muted">
+      <i class="bi bi-calendar-event"></i>
+    </span>
+    <input id="monthPicker"
+           type="month"
+           class="form-control"
+           [value]="mesString"
+           (change)="onMesChange($event)">
+  </div>
+</div>

@@ -1,0 +1,223 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">Transacciones del mes</h5>
+  <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTransaccion">
+    <i class="bi bi-plus-circle me-1"></i> Nueva
+  </button>
+</div>
+
+<ul class="list-group scroll-y" style="max-height: 75vh;">
+  @if (transacciones.length === 0) {
+    <li class="list-group-item text-muted fst-italic">
+      No hay transacciones en este mes.
+    </li>
+  }
+
+  @for (t of transacciones; track t.id) {
+    <li class="list-group-item transaccion-item position-relative grupo-transaccion d-flex justify-content-between align-items-center">
+      
+      <div>
+        @if (t.descripcion) {
+          <strong> {{ t.descripcion }} </strong>
+          <div class="small text-muted">{{ t.categoria }}</div>
+        } @else {
+          <strong> {{ t.categoria }} </strong>
+        }
+        <div class="small text-muted mt-1">
+          {{ t.fecha | date:'EEEE d \'de\' MMMM, y' }}
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span [class.text-success]="t.tipoTransaccion === 'INGRESO'" 
+              [class.text-danger]="t.tipoTransaccion === 'GASTO'"
+              class="fw-semibold">
+          {{ t.monto | currency:'ARS':'$':'1.0-0':'es-AR' }}
+        </span>
+
+        <div class="botones-hover gap-1">
+          <button class="btn btn-sm btn-outline-secondary" (click)="editarTransaccion(t)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="eliminarTransaccion(t.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+    </li>
+  }
+</ul>
+
+
+
+<!-- PAGINADOR -->
+@if (totalPaginas > 1) {
+  <nav aria-label="Paginación">
+    <ul class="pagination justify-content-center mt-3">
+
+      <li class="page-item" [class.disabled]="paginaActual === 0">
+        <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</button>
+      </li>
+
+      @for (idx of paginas; track idx) {
+        <li class="page-item" [class.active]="idx === paginaActual">
+          <button class="page-link" (click)="cambiarPagina(idx)">
+            {{ idx + 1 }}
+          </button>
+        </li>
+      }
+
+      <li class="page-item" [class.disabled]="paginaActual === totalPaginas - 1">
+        <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</button>
+      </li>
+
+    </ul>
+  </nav>
+}
+
+<!-- Modal para crear y editar transacción-->
+<div class="modal fade" id="modalTransaccion" tabindex="-1" aria-labelledby="modalTransaccionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTransaccionLabel">{{ modoEdicion ? 'Editar Transacción' : 'Nueva Transacción' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <form (ngSubmit)="modoEdicion ? actualizarTransaccion() : crearTransaccion()" #form="ngForm" novalidate>
+        <div class="modal-body">
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text"
+                   id="descripcion"
+                   class="form-control"
+                   name="descripcion"
+                   [(ngModel)]="nueva.descripcion"
+                   maxlength="200"
+                   #descripcion="ngModel"
+                   [class.is-invalid]="descripcion.invalid && descripcion.touched"
+                   [class.is-valid]="descripcion.valid && descripcion.touched" />
+            <div class="invalid-feedback">
+              Máximo 200 caracteres.
+            </div>
+          </div>
+
+          <!-- Monto -->
+          <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number"
+                   id="monto"
+                   class="form-control"
+                   name="monto"
+                   required
+                   min="1"
+                   max="9999999999"
+                   [(ngModel)]="nueva.monto"
+                   #monto="ngModel"
+                   [class.is-invalid]="monto.invalid && monto.touched"
+                   [class.is-valid]="monto.valid && monto.touched" />
+            <div class="invalid-feedback">
+              Ingresá un monto válido (máx. 9,999,999,999).
+            </div>
+          </div>
+
+          <!-- Tipo de transacción -->
+          <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <select id="tipo"
+                    class="form-select"
+                    name="tipoTransaccion"
+                    required
+                    [(ngModel)]="nueva.tipoTransaccion"
+                    #tipo="ngModel"
+                    [class.is-invalid]="tipo.invalid && tipo.touched"
+                    [class.is-valid]="tipo.valid && tipo.touched">
+              <option value="" disabled>Seleccionar</option>
+              <option value="GASTO">Gasto</option>
+              <option value="INGRESO">Ingreso</option>
+            </select>
+            <div class="invalid-feedback">Seleccioná un tipo válido.</div>
+          </div>
+
+          <!-- Categoría -->
+          <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <select id="categoria"
+                    class="form-select"
+                    name="categoria"
+                    required
+                    [(ngModel)]="nueva.categoria"
+                    #categoria="ngModel"
+                    [class.is-invalid]="categoria.invalid && categoria.touched"
+                    [class.is-valid]="categoria.valid && categoria.touched">
+              <option value="" disabled>Seleccionar</option>
+              @if(nueva.tipoTransaccion === 'GASTO'){
+                <option value="TRANSPORTE">Transporte</option> <option value="SUPERMERCADO">Supermercado</option> 
+                <option value="ENTRENAMIENTO">Entrenamiento</option> <option value="EDUCACION">Educacion</option> <option value="AMISTADESYFAMILIA">Amistades y familia</option>
+                <option value="CUENTASYSERVICIOS">Cuentas y servicios</option> <option value="HOGAR">Hogar</option> <option value="IMPUESTOS">Impuestos</option>
+                <option value="INDUMENTARIA">Indumentaria</option> <option value="MASCOTAS">Mascotas</option>
+                <option value="SALUDYCUIDADOPERSONAL">Salud y cuidado personal</option> <option value="SHOPPING">Shopping</option>
+                <option value="SUSCRIPCIONES">Suscripciones</option> <option value="VIAJES">Viajes</option>
+                <option value="PENDIENTEDECATEGORIA">Pendiente de categoria</option> <option value="COMIDASYBEBIDAS">Comidas y Bebidas</option>
+                <option value="OTROS">Otros</option>
+              }@else{
+                <option value="SUELDO">Sueldo</option> <option value="INVERSIONES">Inversiones</option> 
+                <option value="PENDIENTEDECATEGORIA">Pendiente de categoria</option> <option value="CREDITOSYFINANCIACION">Creditos y financiacion</option>
+                <option value="OTROS">Otros</option>
+              }
+            </select>
+            <div class="invalid-feedback">Seleccioná una categoría.</div>
+          </div>
+
+          <!-- Fecha -->
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date"
+                   id="fecha"
+                   class="form-control"
+                   name="fecha"
+                   required
+                   [(ngModel)]="nueva.fecha"
+                   #fecha="ngModel"
+                   [class.is-invalid]="fecha.invalid && fecha.touched"
+                   [class.is-valid]="fecha.valid && fecha.touched" />
+            <div class="invalid-feedback">Seleccioná una fecha válida.</div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEliminarLabel">¿Eliminar transacción?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        Esta acción no se puede deshacer. ¿Estás seguro de que querés eliminar esta transacción?
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmarEliminar()">Eliminar</button>
+      </div>
+
+    </div>
+  </div>
+</div>

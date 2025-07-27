@@ -1,0 +1,5 @@
+/* styles.css o scoped al componente si usás ViewEncapsulation */
+input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  opacity: 0.7;
+}
