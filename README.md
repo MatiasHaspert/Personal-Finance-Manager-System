@@ -26,17 +26,16 @@ El sistema ofrece autenticación JWT, dashboards interactivos y análisis financ
 
 ## 🧠 Arquitectura general
 
-Personal-Finance-Manager-System/
-├── backend/ (Spring Boot)
-│ ├── controllers/ → Endpoints REST
-│ ├── services/ → Lógica de negocio y seguridad
-│ ├── models/ → Entidades JPA
-│ └── security/ → Configuración JWT
-└── frontend/ (Angular)
-├── features/ → Dashboard, login, registros
-├── services/ → Comunicación HTTP con backend
-└── guards/ → Protección de rutas autenticadas
-
+**Personal-Finance-Manager-System/**
+**backend/ (Spring Boot)**
+- controllers/ → Endpoints REST
+- services/ → Lógica de negocio y seguridad
+- models/ → Entidades JPA
+- security/ → Configuración JWT
+**frontend/ (Angular)**
+- features/ → Dashboard, login, registros
+- services/ → Comunicación HTTP con backend
+- guards/ → Protección de rutas autenticadas
 
 ---
 
@@ -110,7 +109,7 @@ Una vez autenticado, el usuario accede a su panel con un resumen financiero del 
    cd personal-finance-manager/personal-finance-manager
    mvn spring-boot:run
    ```
-"" 💻 Frontend (Angular)
+## 💻 Frontend (Angular)
 1.Instalar dependencias:
 ```bash
 cd personal-finance-manager-frontend/app
@@ -132,4 +131,5 @@ ng serve --open
 - Matías Haspert
 - Sistema de gestión de finanzas personales
 - Proyecto Full-Stack — 2025 
+
 
