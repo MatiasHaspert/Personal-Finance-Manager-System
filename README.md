@@ -27,12 +27,15 @@ El sistema ofrece autenticación JWT, dashboards interactivos y análisis financ
 ## 🧠 Arquitectura general
 
 **Personal-Finance-Manager-System/**
+
 **backend/ (Spring Boot)**
 - controllers/ → Endpoints REST
 - services/ → Lógica de negocio y seguridad
 - models/ → Entidades JPA
 - security/ → Configuración JWT
+  
 **frontend/ (Angular)**
+
 - features/ → Dashboard, login, registros
 - services/ → Comunicación HTTP con backend
 - guards/ → Protección de rutas autenticadas
@@ -131,5 +134,6 @@ ng serve --open
 - Matías Haspert
 - Sistema de gestión de finanzas personales
 - Proyecto Full-Stack — 2025 
+
 
 
